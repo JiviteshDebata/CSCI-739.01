@@ -10,12 +10,12 @@
 
 ## Environment and Setup
 
-- The simulator used is Carla . Self built files are added to git ignore to save space on every distribution . Meanwhile the realease maybe used internally or linked here. 
+- The simulator used is Carla . Self built files are added to git ignore to save space on every distribution .Meanwhile the realease maybe used internally or linked here. 
 - Python , jyupiter notebooks and a conda environment is used to self contain most dependancies 
-- Unreal engine code is heavily used for modification and usage. C++ and blueprint basics are used in the project for ease of life when carla doesn't have direct functionality
+- Carla Unreal Engine code is not uploaded anymore . Instead just the modifications in the python api are done. Since this is just a framework actual code would be present in experiments.
+Visual Structure is in Project Structure Overview.drawio
 
 
 ## WIP
 
 - requirements.txt
-- gitignore
