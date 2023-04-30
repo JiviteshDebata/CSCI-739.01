@@ -32,10 +32,10 @@ send email for follow up time.
 
 for paper: look at details from other papers
 	abstract things and hten explain it
-	enough technical details for being research worthy seminar
+	enough technical details for being research worthy
 
 structure measurement study
-		technical study
+		  technical study
 
 
 how these apis were designed and called
@@ -50,8 +50,10 @@ focus on: built functionality ontop of carla
 		this is what we have done 
 		
 keep 
-descusion - pre vs post and use to motivate this functionality
-design - how we built these api
+descusion (intorduction)- pre vs post and use to motivate this functionality
+design (metheadology) - how we built these api
+                        - technical detailes
+                        - highlevel details
 evaluation - showing pictures of working software
 		"before this 100 lines of code" now this is 2 lines of code.
 		MALKE SURE CODE WORKS - AND LIST OF KNOWN BUGS - MUST BE HOSTEDO N GITHUB AND HOW TO GET IT WORKING
