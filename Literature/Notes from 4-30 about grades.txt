@@ -1,0 +1,61 @@
+motivation : 2/2  - what are this problem, and why is it relevelnt to you question
+
+backround: 2/0 (not counted)- what is a point cloud , what are the tecnical terms for someone outside this field to nunderstand
+
+design: 7:5 - how did you design your sisystem what are your research contributions - technical contributions of this system
+			ex what was your exparimental design. what were your metrics, where did you get your data, given these condidtions of the expariemtn, when talking about a system given, what are your algorithums and why each of those algorithums.
+
+measuremetn study - what are your measurements, what are your souces, why each metric
+
+if building a system: 
+
+ex auto cast
+	whatare the research contributions
+		sceduling algorithums
+			high level overview of the algorithum and what it does
+			low level overview of the "					"
+
+elvaluation: 7/5 - in the design you have said your contributions -> show how efective your solutions is at solving this task, the metrics used in this evaluation will be described -> usually have to define the metrics early on (design, intro, depends on study and what you are doing) come back to these metrics you have defined and how you are defining. explination of metric and then evaluation of metric on your system compared to others
+
+conclusion 2/2 - similar to abstract worded differently. usually more insite bc you are assuming that the reader has read the paper where in the abstract you do not assume this.
+
+graphics 3/2 - 
+
+delivery 3/2
+
+Q\A 5/4
+
+effort 9/7
+
+send email for follow up time.
+		scores are reltive to other classmates
+
+for paper: look at details from other papers
+	abstract things and hten explain it
+	enough technical details for being research worthy seminar
+
+structure measurement study
+		technical study
+
+
+how these apis were designed and called
+
+in evalueation:
+	comapar to something else
+
+skip standarization in paper
+
+focus on: built functionality ontop of carla
+		this is how we designed
+		this is what we have done 
+		
+keep 
+descusion - pre vs post and use to motivate this functionality
+design - how we built these api
+evaluation - showing pictures of working software
+		"before this 100 lines of code" now this is 2 lines of code.
+		MALKE SURE CODE WORKS - AND LIST OF KNOWN BUGS - MUST BE HOSTEDO N GITHUB AND HOW TO GET IT WORKING
+conclusion - REWITE ABSTRACT
+
+ABSTRACT - 1 LINE SUMMERY OF EACH SECTION - WHOLE PAPER IN ONE PARAGRAPH
+
