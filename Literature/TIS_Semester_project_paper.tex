@@ -7,6 +7,11 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs} % For better looking tables
+\usepackage{caption} % For customizing captions
+\usepackage[mode=text]{siunitx} % For proper alignment of numbers in table
+
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -149,7 +154,7 @@ For instance, localization accuracy was defined and measured differently in each
 
 Our goal is to measure the performance of these compression techniques under different scenarios, such as when there is an excess of bandwidth or when the available bandwidth is limited. To achieve this, we developed a set of standardized evaluation metrics (as defined in Section 2.1) that would allow us to compare the techniques on a level playing field.
 
-Figure X (to be inserted) provides a visual representation of our analysis, highlighting the discrepancies in the standards across the collected papers.
+Table I \ref{tab:empirical_analysis} provides a visual representation of our analysis, highlighting the discrepancies in the standards across the collected papers.
 
 In the next section, we will discuss our experimental design and the methodology used to evaluate the performance of various 3D point cloud compression techniques based on the defined metrics and the insights gained from our analysis of the collected papers.
 
@@ -177,7 +182,20 @@ In the next section, we will discuss our experimental design and the methodology
 % as one part of the entire proceedings, and not as an independent document. 
 % Please do not revise any of the current designations.
 
-
+\begin{table*}[htbp]
+    \centering
+    \caption{Empirical Analysis of Cooperative Perception Network Features}
+    \label{tab:empirical_analysis}
+    \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    Papers & Accuracy & Bandwidth(in mbps) & Pipeline latency & Requires Global 3D Map \\ \midrule
+    AutoCast & 10-30cm & 7.2 & 82.8 & Y  \\
+    AVR & +-1.5 meter & 10-34.95 & 70 & Y  \\
+    VIPS  & 87\%. & 0.0013 & 65 & N  \\
+    VI-Eye & "Centimeter Level" & ~0.02-0.09 & 192.61 & Y  \\
+    \bottomrule
+    \end{tabular}
+    \end{table*}
 
 \subsection{Experimental Design and Scenario Analysis}
 In this section, we describe our experimental design and the methodology used to evaluate the performance of various 3D point cloud compression techniques based on the defined metrics and the insights gained from our analysis of the collected papers. Based on our analysis, VIPS [1] emerged as the clear winner, requiring minimum bandwidth and outperforming the other techniques both quantitatively and qualitatively. However, our professor presented a challenging scenario that led us to explore two different paths in our experimental design.
@@ -201,32 +219,94 @@ To overcome these limitations, we decided to develop a visual tool that integrat
 By analyzing the two paths, we aim to identify the most suitable approach for handling the challenging scenario, providing valuable insights into the performance of 3D point cloud compression techniques in real-world situations with dynamic agents and limited network resources.
 
 
+\subsection{Qualitative and Quantitative Analysis}
+Based on our analysis, VIPS [1] emerges as the most suitable method to implement. However, the feedback we received raised concerns about the trustworthiness of processed data from another vehicle and the necessity of cooperative perception to solve scenarios where the combined point cloud information from two vehicles is needed to provide a complete picture.
+
+
+To address these concerns, we explored the following papers to understand the potential risks and countermeasures associated with LiDAR-based perception in autonomous driving:
+
+"Towards Robust LiDAR-based Perception in Autonomous Driving: General Black-box Adversarial Sensor Attack and Countermeasures" [2]
+"Adversarial Sensor Attack on LiDAR-based Perception in Autonomous Driving" [3]
+4.1 Important Inferences from the Papers
+
+From these papers, we gathered important insights related to the potential risks and challenges associated with LiDAR-based perception in autonomous driving:
+
+1.Adversarial sensor attacks pose a significant threat to the safety and reliability of autonomous vehicles, as they can manipulate the sensor readings and cause misperceptions, leading to unsafe or incorrect decisions.
+
+2.Current LiDAR-based perception systems are vulnerable to both targeted and untargeted adversarial attacks, highlighting the need for robust countermeasures to ensure the safety and reliability of cooperative perception.
+
+3.Possible countermeasures include improving the robustness of the perception algorithms, designing adversarial training methods, and implementing secure data transmission protocols to protect the integrity of the point cloud data exchanged between vehicles.
+
+4.To establish trust in cooperative perception, it is essential to develop methods for verifying the authenticity and integrity of the processed data received from other vehicles.
+
+
+By incorporating the insights from these papers, we can further refine our analysis and develop more robust and trustworthy 3D point cloud compression techniques that can effectively address the challenging scenario and ensure the safe operation of autonomous vehicles in real-world environments.
+
+\subsection{Extending Carla}
+In this section, we discuss our efforts to extend the CARLA simulator to support our experimental design and address the challenging scenario involving vehicles A, B, and C. We focused on developing two main components: a Vehicle Manager and a Network Manager.
+
+5.1 Vehicle Manager
+
+Creating custom scenarios in CARLA can be quite challenging, especially when it comes to spawning and managing multiple vehicles. The CARLA documentation [1] provides a guide for spawning vehicles, but the process is complex and requires a deep understanding of the underlying concepts and architecture.
+
+To facilitate the creation of the scenario involving vehicles A, B, and C, we aimed to develop a Vehicle Manager. This component would simplify the process of spawning and controlling vehicles within the simulation, allowing us to focus on the evaluation of 3D point cloud compression techniques and cooperative perception.
+
+5.2 Network Manager
+
+Another challenge we encountered was the lack of built-in support for vehicle-to-vehicle (V2V) communication in CARLA. The simulator's documentation does not provide any guidance on implementing networking concepts for cooperative perception between vehicles.
+
+To address this limitation, we aimed to develop a Network Manager that would enable communication between vehicles in the simulation. This component would allow vehicles to exchange point cloud data and other relevant information, simulating the real-world conditions of V2V communication for cooperative perception.
+
+By extending CARLA with a Vehicle Manager and a Network Manager, we hope to create a more realistic and flexible simulation environment for evaluating the performance of 3D point cloud compression techniques in the context of cooperative perception. These extensions will enable us to investigate the challenging scenario involving vehicles A, B, and C and provide valuable insights into the real-world applicability of the evaluated compression techniques.
 
 -------------------------------------------------------------------------------------------------------
-our contributions to the AV project:
-vehicle manager
-network manager
-and a qualitative/quantitative meta analysis of 4 papers
+% our contributions to the AV project:
+% vehicle manager
+% network manager
+% and a qualitative/quantitative meta analysis of 4 papers
 
-our conclusions were:
-post processed data is sufficient
-caviot: this conclusion is based on phylosophy and what other papers have shown pieces of    this problem.
-The lack of standards makes this annalysis hard
+% our conclusions were:
+% post processed data is sufficient
+% caviot: this conclusion is based on phylosophy and what other papers have shown pieces of    this problem.
+% The lack of standards makes this annalysis hard
 
-future work:
-standards for:
-communication protocal
-a minimum robustness based on bandwidth and packet loss rates
-a minimum accuricy of detections on XXX dataset(s)
-cost of implementation/maintence
-emergancy personal protocal
-a minimum localisation accuricy on XXX dataset(s)
-a minimum distance estimation accurcy
+% future work:
+% standards for
+% communication protocal
+% a minimum robustness based on bandwidth and packet loss rates
+% a minimum accuricy of detections on XXX dataset(s)
+% cost of implementation/maintence
+% emergancy personal protocal
+% a minimum localisation accuricy on XXX dataset(s)
+% a minimum distance estimation accurcy
 
-note: call out that the community has decided that things should happen in 100ms but this       needs to be brawdened
+% note: call out that the community has decided that things should happen in 100ms but this       needs to be brawdened
 
--------------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------------
+\section{Evaluation}
+In this section, we present the evaluation of our extended CARLA simulator, focusing on the differences between the point cloud visualization and cooperative perception results obtained using our method and the original CARLA method. We compare the performance of the 3D point cloud compression techniques in the context of the challenging scenario involving vehicles A, B, and C.
 
+6.1 Comparison of Point Cloud Visualization
+
+We first compare the point cloud visualization generated by our extended CARLA simulator with that of the original CARLA method. This comparison helps us determine the effectiveness of our Vehicle Manager and Network Manager extensions in creating a more realistic and flexible simulation environment for cooperative perception.
+
+Figure X: Point cloud visualization using the original CARLA method
+(Insert image of point cloud visualization using the original CARLA method)
+
+Figure Y: Point cloud visualization using our extended CARLA method
+(Insert image of point cloud visualization using our extended CARLA method)
+
+6.2 Comparison of Cooperative Perception Results
+
+Next, we compare the cooperative perception results obtained using our extended CARLA method and the original CARLA method. We analyze the performance of the 3D point cloud compression techniques in the context of the challenging scenario involving vehicles A, B, and C, considering metrics such as pipeline latency, localization accuracy, bandwidth requirements, and robustness.
+
+Figure Z: Cooperative perception results using the original CARLA method
+(Insert image of cooperative perception results using the original CARLA method)
+
+Figure W: Cooperative perception results using our extended CARLA method
+(Insert image of cooperative perception results using our extended CARLA method)
+
+By comparing the point cloud visualization and cooperative perception results of our extended CARLA method and the original CARLA method, we can demonstrate the effectiveness of our extensions in providing a more realistic and flexible simulation environment for evaluating the performance of 3D point cloud compression techniques in real-world scenarios.
 \section{Introduction}
 \subsection{state what AV is}
 \subsection{state the problem in AV we wish to solve}
