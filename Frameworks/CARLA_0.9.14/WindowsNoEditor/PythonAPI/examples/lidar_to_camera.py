@@ -57,7 +57,7 @@ def tutorial(args):
     """
     # Connect to the server
     client = carla.Client(args.host, args.port)
-    client.set_timeout(2.0)
+    client.set_timeout(5.0)
     world = client.get_world()
     bp_lib = world.get_blueprint_library()
 

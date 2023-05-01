@@ -75,7 +75,7 @@ BB_COLOR = (248, 64, 24)
 class ClientSideBoundingBoxes(object):
     """
     This is a module responsible for creating 3D bounding boxes and drawing them
-    client-side on pygame surface.
+    client-side on a pygame surface.
     """
 
     @staticmethod

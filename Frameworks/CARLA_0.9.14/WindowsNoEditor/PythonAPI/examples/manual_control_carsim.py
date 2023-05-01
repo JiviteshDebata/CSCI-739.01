@@ -1091,7 +1091,7 @@ def game_loop(args):
 
     try:
         client = carla.Client(args.host, args.port)
-        client.set_timeout(2.0)
+        client.set_timeout(10.0)
 
         display = pygame.display.set_mode(
             (args.width, args.height),
