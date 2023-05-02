@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <style>
+      .vehicle-container {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .warning {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="vehicle-data">
+      <!-- Vehicle containers will be added here -->
+    </div>
+
+    <script>
+      function updateDashboard() {
+        fetch("/get_vehicle_data")
+          .then((response) => response.json())
+          .then((data) => {
+            const vehicleDataDiv = document.getElementById("vehicle-data");
+            vehicleDataDiv.innerHTML = "";
+
+            for (const vehicleId in data) {
+              const vehicleContainer = document.createElement("div");
+              vehicleContainer.classList.add("vehicle-container");
+
+              const vehicleTitle = document.createElement("h3");
+              vehicleTitle.textContent = `Vehicle ${vehicleId}`;
+              vehicleContainer.appendChild(vehicleTitle);
+
+              const pointSize = document.createElement("p");
+              pointSize.textContent = `Points Size: ${data[vehicleId].points_size}`;
+              vehicleContainer.appendChild(pointSize);
+
+              if (parseInt(data[vehicleId].points_size) > 500) {
+                const warning = document.createElement("p");
+                warning.className = "warning";
+                warning.innerText = "High bandwidth usage!";
+                vehicleContainer.appendChild(warning);
+              }
+
+              vehicleDataDiv.appendChild(vehicleContainer);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching vehicle data:", error);
+          });
+      }
+
+      setInterval(updateDashboard, 2000); // Fetch data every 2 seconds
+    </script>
+  </body>
+</html>

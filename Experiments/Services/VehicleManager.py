@@ -23,6 +23,11 @@ import open3d as o3d
 from matplotlib import cm
 from ClientSideLidarVisualizer import ClientSideLidarVisualizer
 
+##Network from here
+import requests
+import threading
+import uuid
+
 class VehicleManager(object):
     """
     A vehicle class that opens up a client connection to the simulator and shows the live visualizations.
@@ -33,6 +38,7 @@ class VehicleManager(object):
         self.world = None
         self.car = None
         self.viz=None
+        self.vehicle_id = uuid.uuid4()
         
         
         self.camera = None
@@ -54,6 +60,7 @@ class VehicleManager(object):
         VIEW_FOV = 90
         
         camera_bp = self.world.get_blueprint_library().find('sensor.camera.rgb')
+        
         camera_bp.set_attribute('image_size_x', str(VIEW_WIDTH))
         camera_bp.set_attribute('image_size_y', str(VIEW_HEIGHT))
         camera_bp.set_attribute('fov', str(VIEW_FOV))
@@ -71,8 +78,6 @@ class VehicleManager(object):
         RANGE=100.0
         ROTATION_FREQUENCY=1.0 / DELTA
         POINTS_PER_SECOND=50000
-        
-        
         
         lidar_bp=self.world.get_blueprint_library().find('sensor.lidar.ray_cast')
         lidar_bp.set_attribute('noise_stddev', str(ADDED_NOISE))
@@ -94,7 +99,7 @@ class VehicleManager(object):
         settings.synchronous_mode = synchronous_mode
         self.world.apply_settings(settings)
     
-    #TODO setup async to fix Lidar
+    #TODO  setup async to fix Lidar
     
 
     def setup_car(self):
@@ -103,6 +108,7 @@ class VehicleManager(object):
         """
 
         car_bp = self.world.get_blueprint_library().filter('vehicle.*')[0]
+        # car_bp.set_attribute('role_name', f'vehicle_{self.unique_id}') #WIP? Explore BP Classes
         location = random.choice(self.world.get_map().get_spawn_points())
         self.car = self.world.spawn_actor(car_bp, location)
 
@@ -191,6 +197,22 @@ class VehicleManager(object):
 
         car.apply_control(control)
         return False
+    
+    def update_network(self, points_size):
+        def send_request():
+            data = {
+                "vehicle_id": self.vehicle_id,
+                "points_size": points_size
+            }
+            try:
+                requests.post("http://127.0.0.1:5001/update", data=data)
+            except requests.exceptions.RequestException as e:
+                print(f"Error updating dashboard: {e}")
+
+        update_thread = threading.Thread(target=send_request)
+        update_thread.start()
+
+
 
     @staticmethod
     def set_image(weak_self, img):
@@ -203,33 +225,7 @@ class VehicleManager(object):
         if self.capture:
             self.image = img
             self.capture = False
-            
-    # @staticmethod
-    # def set_points(weak_self, points):
-    #     """
-    #     Sets point cloud coming from lidar sensor.
-    #     """
-    #     self=weak_self()
-    #     if self.point_capture:
-    #         self.point_list = o3d.geometry.PointCloud()
-    #         for point in points:
-    #             self.point_list.points.append(o3d.utility.Vector3dVector(point.location))
-    #         self.point_capture=False
-    
 
-    @staticmethod
-    def set_points(weak_self, points):
-        """
-        Sets point cloud coming from lidar sensor.
-        """
-        self = weak_self()
-        if self.point_capture:
-            # point_data = np.array([[p.x, p.y, p.z] for p in points])
-            # self.point_list = o3d.geometry.PointCloud()
-            # self.point_list.points = o3d.utility.Vector3dVector(point_data)
-            # self.points=points
-            
-            self.point_capture = False
             
     @staticmethod
     def update_points(weak_self, points):
@@ -270,7 +266,7 @@ class VehicleManager(object):
             self.point_list.points = o3d.utility.Vector3dVector(points)
             self.point_list.colors = o3d.utility.Vector3dVector(int_color)  
             
-            
+
             self.point_capture = False
 
   
@@ -297,7 +293,8 @@ class VehicleManager(object):
 
         try:
             pygame.init()
-
+            
+   
             self.client = carla.Client('127.0.0.1', 2000)
             self.client.set_timeout(2.0)
             self.world = self.client.get_world()
@@ -305,7 +302,8 @@ class VehicleManager(object):
             self.setup_car()
             self.setup_camera()
             self.setup_lidar()
-
+            
+            
             self.display = pygame.display.set_mode((VIEW_WIDTH, VIEW_HEIGHT), pygame.HWSURFACE | pygame.DOUBLEBUF)
             pygame_clock = pygame.time.Clock()
 
@@ -323,18 +321,15 @@ class VehicleManager(object):
             self.vis.get_render_option().point_size = 1
             self.vis.get_render_option().show_coordinate_frame = True
             
-            # self.point_list = o3d.geometry.PointCloud()
             frame = 0
             while True:
                 self.world.tick()
                 self.capture = True
                 self.point_capture=True
-                # self.point_capture=True
-                # vis.update_geometry(self.point_list)
-                # vis.poll_events()
+              
                 
                 
-                pygame_clock.tick_busy_loop(20) #Should be 100?what is this? CARLA magic frequency is 1/0.005
+                pygame_clock.tick_busy_loop(20) #Should be 100?what is this? CARLA magic frequency is 1/20
                 
                 
                 
@@ -360,6 +355,14 @@ class VehicleManager(object):
                 frame += 1
                 
                 pygame.event.pump()
+                
+                points_size = len(self.point_list.points)
+
+                # Update the dashboard with the size of the self.points list
+                self.update_network(points_size)
+                
+                
+                
                 if self.control(self.car):
                     return
 
@@ -367,23 +370,24 @@ class VehicleManager(object):
             self.set_synchronous_mode(False)
             self.camera.destroy()
             self.car.destroy()
-            # self.lidar.destroy()
+            self.lidar.destroy()
+            self.vis.destroy_window()
             pygame.quit()
             
 
 
 
-def main():
-    """
-    Initializes the client-side bounding box demo.
-    """
+# def main():
+#     """
+#     Initializes the client-side bounding box demo.
+#     """
 
-    try:
-        client = VehicleManager()
-        client.game_loop()
-    finally:
-        print('EXIT')
+#     try:
+#         client = VehicleManager()
+#         client.game_loop()
+#     finally:
+#         print('EXIT')
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
